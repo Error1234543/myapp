@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import io
-import os
 import re
 from typing import Annotated
 
@@ -13,7 +12,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 from pydantic import BaseModel, Field
 from pypdf import PdfReader, PdfWriter
 
-APP_VERSION = "0.1.0"
+APP_VERSION = "0.1.1"
 MAX_UPLOAD_BYTES = 15 * 1024 * 1024
 MAX_IMAGE_PIXELS = 30_000_000
 MAX_PDF_PAGES = 200
@@ -26,20 +25,15 @@ app = FastAPI(
     version=APP_VERSION,
 )
 
-origins = [
-    item.strip()
-    for item in os.getenv(
-        "FRONTEND_ORIGINS",
-        "http://localhost:5500,http://127.0.0.1:5500,http://localhost:3000",
-    ).split(",")
-    if item.strip()
-]
+# Public utility API: allow browser requests from the deployed static frontend.
+# No cookies or credentialed requests are used.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type"],
+    allow_headers=["*"],
+    expose_headers=["Content-Disposition"],
 )
 
 
@@ -85,12 +79,7 @@ def open_image(data: bytes) -> Image.Image:
 
 @app.get("/")
 def root():
-    return {
-        "name": "TOOLNEX API",
-        "status": "running",
-        "version": APP_VERSION,
-        "docs": "/docs",
-    }
+    return {"name": "TOOLNEX API", "status": "running", "version": APP_VERSION, "docs": "/docs"}
 
 
 @app.get("/health")
@@ -100,33 +89,28 @@ def health():
 
 @app.get("/api/tools")
 def tools_catalog():
-    return {
-        "tools": [
-            {"id": "pdf-merge", "name": "PDF Merge", "category": "PDF", "endpoint": "/api/pdf/merge"},
-            {"id": "pdf-split", "name": "PDF Split", "category": "PDF", "endpoint": "/api/pdf/split"},
-            {"id": "pdf-compress", "name": "PDF Compress", "category": "PDF", "endpoint": "/api/pdf/compress"},
-            {"id": "image-compress", "name": "Image Compress", "category": "Image", "endpoint": "/api/image/compress"},
-            {"id": "image-resize", "name": "Image Resize", "category": "Image", "endpoint": "/api/image/resize"},
-            {"id": "image-convert", "name": "Image Convert", "category": "Image", "endpoint": "/api/image/convert"},
-            {"id": "word-counter", "name": "Word Counter", "category": "Text", "endpoint": "/api/text/word-count"},
-        ]
-    }
+    return {"tools": [
+        {"id": "pdf-merge", "name": "PDF Merge", "category": "PDF", "endpoint": "/api/pdf/merge"},
+        {"id": "pdf-split", "name": "PDF Split", "category": "PDF", "endpoint": "/api/pdf/split"},
+        {"id": "pdf-compress", "name": "PDF Compress", "category": "PDF", "endpoint": "/api/pdf/compress"},
+        {"id": "image-compress", "name": "Image Compress", "category": "Image", "endpoint": "/api/image/compress"},
+        {"id": "image-resize", "name": "Image Resize", "category": "Image", "endpoint": "/api/image/resize"},
+        {"id": "image-convert", "name": "Image Convert", "category": "Image", "endpoint": "/api/image/convert"},
+        {"id": "word-counter", "name": "Word Counter", "category": "Text", "endpoint": "/api/text/word-count"},
+    ]}
 
 
 @app.post("/api/pdf/merge")
-async def pdf_merge(files: Annotated[list[UploadFile], File()]):
+async def pdf_merge(files: Annotated[list[UploadFile], File(description="Select 2 to 10 PDF files")]):
     if len(files) < 2:
         raise HTTPException(status_code=400, detail="Upload at least 2 PDF files.")
     if len(files) > 10:
         raise HTTPException(status_code=400, detail="You can merge up to 10 PDFs at a time.")
-
     writer = PdfWriter()
     for upload in files:
-        data = await read_upload(upload)
-        reader = validate_pdf(data)
+        reader = validate_pdf(await read_upload(upload))
         for page in reader.pages:
             writer.add_page(page)
-
     result = io.BytesIO()
     writer.write(result)
     writer.close()
@@ -134,18 +118,10 @@ async def pdf_merge(files: Annotated[list[UploadFile], File()]):
 
 
 @app.post("/api/pdf/split")
-async def pdf_split(
-    file: Annotated[UploadFile, File()],
-    start_page: Annotated[int, Form(ge=1)] = 1,
-    end_page: Annotated[int, Form(ge=1)] = 1,
-):
-    data = await read_upload(file)
-    reader = validate_pdf(data)
+async def pdf_split(file: Annotated[UploadFile, File()], start_page: Annotated[int, Form(ge=1)] = 1, end_page: Annotated[int, Form(ge=1)] = 1):
+    reader = validate_pdf(await read_upload(file))
     if start_page > end_page or end_page > len(reader.pages):
-        raise HTTPException(
-            status_code=400,
-            detail=f"Choose a valid page range from 1 to {len(reader.pages)}.",
-        )
+        raise HTTPException(status_code=400, detail=f"Choose a valid page range from 1 to {len(reader.pages)}.")
     writer = PdfWriter()
     for page_index in range(start_page - 1, end_page):
         writer.add_page(reader.pages[page_index])
@@ -169,27 +145,18 @@ async def pdf_compress(file: Annotated[UploadFile, File()]):
 
 
 @app.post("/api/image/compress")
-async def image_compress(
-    file: Annotated[UploadFile, File()],
-    quality: Annotated[int, Form(ge=20, le=95)] = 75,
-):
-    data = await read_upload(file)
-    image = open_image(data).convert("RGB")
+async def image_compress(file: Annotated[UploadFile, File()], quality: Annotated[int, Form(ge=20, le=95)] = 75):
+    image = open_image(await read_upload(file)).convert("RGB")
     result = io.BytesIO()
     image.save(result, format="JPEG", quality=quality, optimize=True)
     return output_file(result.getvalue(), "toolnex-compressed.jpg", "image/jpeg")
 
 
 @app.post("/api/image/resize")
-async def image_resize(
-    file: Annotated[UploadFile, File()],
-    width: Annotated[int, Form(ge=1, le=6000)],
-    height: Annotated[int, Form(ge=1, le=6000)],
-):
+async def image_resize(file: Annotated[UploadFile, File()], width: Annotated[int, Form(ge=1, le=6000)], height: Annotated[int, Form(ge=1, le=6000)]):
     if width * height > MAX_IMAGE_PIXELS:
         raise HTTPException(status_code=400, detail="Requested dimensions are too large.")
-    data = await read_upload(file)
-    image = open_image(data)
+    image = open_image(await read_upload(file))
     image.thumbnail((width, height), Image.Resampling.LANCZOS)
     result = io.BytesIO()
     fmt = "PNG" if image.mode in ("RGBA", "P") else "JPEG"
@@ -202,19 +169,14 @@ async def image_resize(
 
 
 @app.post("/api/image/convert")
-async def image_convert(
-    file: Annotated[UploadFile, File()],
-    format: Annotated[str, Form()] = "png",
-):
+async def image_convert(file: Annotated[UploadFile, File()], format: Annotated[str, Form()] = "png"):
     fmt = format.lower()
     if fmt not in {"png", "jpg", "jpeg", "webp"}:
         raise HTTPException(status_code=400, detail="Choose PNG, JPG or WEBP.")
-    data = await read_upload(file)
-    image = open_image(data)
+    image = open_image(await read_upload(file))
     result = io.BytesIO()
     if fmt in {"jpg", "jpeg"}:
-        image = image.convert("RGB")
-        image.save(result, format="JPEG", quality=90, optimize=True)
+        image.convert("RGB").save(result, format="JPEG", quality=90, optimize=True)
         return output_file(result.getvalue(), "toolnex-converted.jpg", "image/jpeg")
     if fmt == "webp":
         image.save(result, format="WEBP", quality=90, method=4)
@@ -230,10 +192,9 @@ class WordCountRequest(BaseModel):
 @app.post("/api/text/word-count")
 def word_count(payload: WordCountRequest):
     value = payload.text
-    words = re.findall(r"\S+", value)
     return {
         "characters": len(value),
         "characters_without_spaces": len(re.sub(r"\s", "", value)),
-        "words": len(words),
+        "words": len(re.findall(r"\S+", value)),
         "lines": len(value.splitlines()) if value else 0,
     }

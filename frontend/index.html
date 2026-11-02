@@ -18,7 +18,6 @@
     <nav><a href="#tools">Tools</a><a href="#how">How it works</a></nav>
     <a class="top-cta" href="#tools">Explore tools <span>↗</span></a>
   </header>
-
   <main>
     <section class="hero">
       <div class="eyebrow"><span class="pulse"></span> YOUR EVERYDAY DIGITAL TOOLKIT</div>
@@ -28,54 +27,25 @@
       <div class="hero-meta"><span>✦ Simple to use</span><span>✦ Works on mobile</span><span>✦ No account needed for basic tools</span></div>
       <div class="orb-wrap" aria-hidden="true"><div class="orb"><div class="orb-core"></div></div></div>
     </section>
-
     <section class="tools-section" id="tools">
       <div class="section-heading"><div><div class="eyebrow">THE TOOLBOX</div><h2>Find your <span class="gradient-text">tool.</span></h2></div><span class="tool-count" id="toolCount">7 tools</span></div>
       <div class="category-row"><button class="filter active" data-filter="all">All tools</button><button class="filter" data-filter="PDF">PDF</button><button class="filter" data-filter="Image">Image</button><button class="filter" data-filter="Text">Text</button></div>
-
       <div class="tool-grid" id="toolGrid">
-        <article class="tool-card" data-category="PDF" data-search="pdf merge combine join">
-          <div class="tool-icon purple">▤</div><div class="tool-tag">PDF</div><h3>PDF Merge</h3><p>Combine multiple PDF files into one document.</p>
-          <details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/pdf/merge" data-file="files" data-multiple="true"><label class="file-label">Choose 2–10 PDF files<input type="file" name="files" accept="application/pdf,.pdf" multiple required></label><button class="action-btn">Merge PDFs <span>→</span></button></form></details>
-        </article>
-
-        <article class="tool-card" data-category="PDF" data-search="pdf split extract pages">
-          <div class="tool-icon purple">◫</div><div class="tool-tag">PDF</div><h3>PDF Split</h3><p>Extract a page range into a new PDF.</p>
-          <details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/pdf/split"><label class="file-label">Choose PDF<input type="file" name="file" accept="application/pdf,.pdf" required></label><div class="two-fields"><label>From page<input type="number" name="start_page" value="1" min="1" required></label><label>To page<input type="number" name="end_page" value="1" min="1" required></label></div><button class="action-btn">Split PDF <span>→</span></button></form></details>
-        </article>
-
-        <article class="tool-card" data-category="PDF" data-search="pdf compress reduce size">
-          <div class="tool-icon purple">⇩</div><div class="tool-tag">PDF</div><h3>PDF Compress</h3><p>Try to reduce PDF file size for easier sharing.</p>
-          <details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/pdf/compress"><label class="file-label">Choose PDF<input type="file" name="file" accept="application/pdf,.pdf" required></label><button class="action-btn">Compress PDF <span>→</span></button></form></details>
-        </article>
-
-        <article class="tool-card" data-category="Image" data-search="image compress photo jpg reduce size">
-          <div class="tool-icon pink">▧</div><div class="tool-tag">IMAGE</div><h3>Image Compress</h3><p>Reduce image size and download a JPG copy.</p>
-          <details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/image/compress"><label class="file-label">Choose image<input type="file" name="file" accept="image/*" required></label><label>Quality <input type="range" name="quality" min="20" max="95" value="75"></label><button class="action-btn">Compress image <span>→</span></button></form></details>
-        </article>
-
-        <article class="tool-card" data-category="Image" data-search="image resize dimensions photo">
-          <div class="tool-icon pink">⤢</div><div class="tool-tag">IMAGE</div><h3>Image Resize</h3><p>Resize an image to the dimensions you need.</p>
-          <details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/image/resize"><label class="file-label">Choose image<input type="file" name="file" accept="image/*" required></label><div class="two-fields"><label>Width<input type="number" name="width" value="800" min="1" max="6000" required></label><label>Height<input type="number" name="height" value="800" min="1" max="6000" required></label></div><button class="action-btn">Resize image <span>→</span></button></form></details>
-        </article>
-
-        <article class="tool-card" data-category="Image" data-search="image convert png jpg webp format">
-          <div class="tool-icon pink">⇄</div><div class="tool-tag">IMAGE</div><h3>Image Convert</h3><p>Convert an image to PNG, JPG or WEBP.</p>
-          <details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/image/convert"><label class="file-label">Choose image<input type="file" name="file" accept="image/*" required></label><label>Output format<select name="format"><option value="png">PNG</option><option value="jpg">JPG</option><option value="webp">WEBP</option></select></label><button class="action-btn">Convert image <span>→</span></button></form></details>
-        </article>
-
-        <article class="tool-card" data-category="Text" data-search="word counter character count text">
-          <div class="tool-icon blue">¶</div><div class="tool-tag">TEXT</div><h3>Word Counter</h3><p>Count words, characters and lines in your text.</p>
-          <details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/text/word-count" data-json="true"><label>Your text<textarea name="text" rows="4" maxlength="200000" placeholder="Paste or type your text…" required></textarea></label><button class="action-btn">Count words <span>→</span></button><div class="inline-result" aria-live="polite"></div></form></details>
-        </article>
+        <article class="tool-card" data-category="PDF" data-search="pdf merge combine join"><div class="tool-icon purple">▤</div><div class="tool-tag">PDF</div><h3>PDF Merge</h3><p>Combine multiple PDF files into one document.</p><details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/pdf/merge"><label class="file-label">Choose 2–10 PDF files<input type="file" name="files" accept="application/pdf,.pdf" multiple required></label><button class="action-btn">Merge PDFs <span>→</span></button></form></details></article>
+        <article class="tool-card" data-category="PDF" data-search="pdf split extract pages"><div class="tool-icon purple">◫</div><div class="tool-tag">PDF</div><h3>PDF Split</h3><p>Extract a page range into a new PDF.</p><details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/pdf/split"><label class="file-label">Choose PDF<input type="file" name="file" accept="application/pdf,.pdf" required></label><div class="two-fields"><label>From page<input type="number" name="start_page" value="1" min="1" required></label><label>To page<input type="number" name="end_page" value="1" min="1" required></label></div><button class="action-btn">Split PDF <span>→</span></button></form></details></article>
+        <article class="tool-card" data-category="PDF" data-search="pdf compress reduce size"><div class="tool-icon purple">⇩</div><div class="tool-tag">PDF</div><h3>PDF Compress</h3><p>Try to reduce PDF file size for easier sharing.</p><details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/pdf/compress"><label class="file-label">Choose PDF<input type="file" name="file" accept="application/pdf,.pdf" required></label><button class="action-btn">Compress PDF <span>→</span></button></form></details></article>
+        <article class="tool-card" data-category="Image" data-search="image compress photo jpg reduce size"><div class="tool-icon pink">▧</div><div class="tool-tag">IMAGE</div><h3>Image Compress</h3><p>Reduce image size and download a JPG copy.</p><details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/image/compress"><label class="file-label">Choose image<input type="file" name="file" accept="image/*" required></label><label>Quality <input type="range" name="quality" min="20" max="95" value="75"></label><button class="action-btn">Compress image <span>→</span></button></form></details></article>
+        <article class="tool-card" data-category="Image" data-search="image resize dimensions photo"><div class="tool-icon pink">⤢</div><div class="tool-tag">IMAGE</div><h3>Image Resize</h3><p>Resize an image to the dimensions you need.</p><details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/image/resize"><label class="file-label">Choose image<input type="file" name="file" accept="image/*" required></label><div class="two-fields"><label>Width<input type="number" name="width" value="800" min="1" max="6000" required></label><label>Height<input type="number" name="height" value="800" min="1" max="6000" required></label></div><button class="action-btn">Resize image <span>→</span></button></form></details></article>
+        <article class="tool-card" data-category="Image" data-search="image convert png jpg webp format"><div class="tool-icon pink">⇄</div><div class="tool-tag">IMAGE</div><h3>Image Convert</h3><p>Convert an image to PNG, JPG or WEBP.</p><details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/image/convert"><label class="file-label">Choose image<input type="file" name="file" accept="image/*" required></label><label>Output format<select name="format"><option value="png">PNG</option><option value="jpg">JPG</option><option value="webp">WEBP</option></select></label><button class="action-btn">Convert image <span>→</span></button></form></details></article>
+        <article class="tool-card" data-category="Text" data-search="word counter character count text"><div class="tool-icon blue">¶</div><div class="tool-tag">TEXT</div><h3>Word Counter</h3><p>Count words, characters and lines in your text.</p><details class="tool-panel"><summary>Open tool <span>＋</span></summary><form data-endpoint="/api/text/word-count" data-json="true"><label>Your text<textarea name="text" rows="4" maxlength="200000" placeholder="Paste or type your text…" required></textarea></label><button class="action-btn">Count words <span>→</span></button><div class="inline-result" aria-live="polite"></div></form></details></article>
       </div>
       <p class="no-results" id="noResults" hidden>No matching tools. Try another search.</p>
     </section>
-
     <section class="how-section" id="how"><div class="eyebrow">MADE TO BE SIMPLE</div><h2>Three steps. <span class="gradient-text">That’s it.</span></h2><div class="steps"><div><b>01</b><h3>Choose a tool</h3><p>Find the task you want to finish.</p></div><div><b>02</b><h3>Add your file</h3><p>Select a file or enter your text.</p></div><div><b>03</b><h3>Get your result</h3><p>Process it and download the output.</p></div></div></section>
   </main>
   <footer><a class="brand" href="#"><span class="brand-mark">T</span><span>TOOL<span class="brand-accent">NEX</span></span></a><span>Useful tools. One simple place.</span><span>© <span id="year"></span> TOOLNEX</span></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>window.TOOLNEX_API_BASE = "https://myapp-f2xz.onrender.com";</script>
   <script src="./script.js"></script>
 </body>
 </html>

@@ -1,31 +1,23 @@
-# TOOLNEX
+# AURA SPACE
 
-**One Platform. Hundreds of Tools.**
+AURA SPACE is a calm, mobile-first personal workspace for everyday planning and digital organization.
 
-TOOLNEX is a mobile-first online utility platform. This repository starts with a Python FastAPI processing backend and a separate web frontend.
+## Current features
+- Overview dashboard
+- Task manager with due dates, completion filters and deletion
+- Notes with create, edit and search
+- Monthly calendar with task markers
+- Smart tools: text helper, focus timer and quick thought capture
+- Responsive mobile navigation and light/dark appearance
+- Local-first storage using browser localStorage
 
 ## Project layout
+- `frontend/` — static AURA SPACE app (HTML, CSS, JavaScript).
+- `backend/` — existing FastAPI service retained for future integrations.
+- `Dockerfile` — retained from the previous backend deployment setup.
 
-- `backend/` — FastAPI API and PDF, image, and text processing engines.
-- `frontend/` — responsive Dark Premium 3D web interface.
-- `Dockerfile` — container setup for Koyeb deployment.
+## Vercel deployment
+Set Root Directory to `frontend`, Framework Preset to `Other`, and leave Build Command and Output Directory empty/default. This is a plain HTML/CSS/JS app and needs no build step.
 
-## Local backend setup
-
-```bash
-cd backend
-python -m venv .venv
-# Activate the virtual environment, then:
-pip install -r requirements.txt
-uvicorn main:app --reload
-```
-
-Open `http://127.0.0.1:8000/docs` for the API test page.
-
-## Deployment
-
-Deploy this repository to Koyeb using the root `Dockerfile`. Configure `PORT` if the platform supplies one. Set `FRONTEND_ORIGINS` to the deployed frontend origin before public launch.
-
-## Safety and privacy
-
-The initial API validates uploads and processes files in memory. Do not upload confidential documents to an unverified deployment. Production deployment should add rate limits, request-size limits at the edge, monitoring, and a tested retention policy.
+## Data and privacy
+Tasks, notes, profile label and appearance preference are stored in this browser on this device. They do not sync across devices yet. Cloud sync and account authentication require a future backend/database integration. Do not store sensitive information in this prototype.
